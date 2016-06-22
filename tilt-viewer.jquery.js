@@ -42,6 +42,10 @@
             if (delta > 0) {
                 $inner.css({transform: 'translateX(' + Math.round(delta * percent - delta) + 'px)'});
             }
+            else {
+                $inner.css({transform: 'translateX(0)'});
+            }
+            console.log('redraw');
         };
 
         window.addEventListener('deviceorientation', function(event) {
@@ -53,15 +57,19 @@
             redraw();
         });
 
+        var resizeTimer = null;
         var onResize = function() {
-            elementWidth = $this.width();
-            innerElementWidth = $inner.outerWidth(true);
-            redraw();
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                elementWidth = $this.width();
+                innerElementWidth = $inner.outerWidth(true);
+                redraw();
+            }, 100);
         };
 
         onResize();
         $(document).ready(onResize);
-        $(document).resize(onResize);
+        $(window).resize(onResize);
 
         if ($inner.is('img')) {
             $inner.on('load', onResize);
